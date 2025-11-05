@@ -1,16 +1,21 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dtos.request.UserCreationRequest;
 import com.example.demo.dtos.response.ApiResponse;
+import com.example.demo.dtos.response.UserResponse;
+import com.example.demo.entities.User;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.IUserService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequestMapping("api/users")
 public class UserController {
@@ -27,6 +32,12 @@ public class UserController {
         }
         String message = userService.sendResetCode(email);
         return ResponseEntity.ok(new ApiResponse<>(200, message, null));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<User>>> getUsers() {
+        List<User> users = userRepository.findAll();
+        return ResponseEntity.ok(new ApiResponse<>(200, "Successfully", users));
     }
 
     @PostMapping("/confirm-otp")
